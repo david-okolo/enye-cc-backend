@@ -7,7 +7,6 @@ import { PlaceAutocompleteType } from '@googlemaps/google-maps-services-js/dist/
 import Redis from 'ioredis';
 
 const client = new Client({});
-const redis = new Redis();
 
 export const autoComplete = async ({query, token, latlng, radius}: IPlacesAutoCompleteParams) => {
     if(!token) {
@@ -36,13 +35,6 @@ export const getHospitals = async ({latlng, radius}: {
     radius: number
 }) => {
 
-    const data = await redis.get(`correct${radius}`);
-
-    if(data) {
-        return { data: JSON.parse(data) };
-    }
-    
-
     let results = [];
 
     try {
@@ -59,8 +51,6 @@ export const getHospitals = async ({latlng, radius}: {
     } catch (error) {
         console.log(error)
     }
-
-    await redis.set(`correct${radius}`, JSON.stringify(results))
 
     return {
         len: results.length,
