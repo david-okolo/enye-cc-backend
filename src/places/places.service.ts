@@ -1,10 +1,8 @@
-import { Client, LatLng, TextSearchResponse } from '@googlemaps/google-maps-services-js'
+import { Client, LatLng, TextSearchResponse, PlacesNearbyResponse, defaultAxiosInstance } from '@googlemaps/google-maps-services-js'
 import crypto from 'crypto';
 import { createToken, delay } from '../lib/helper';
 import { IPlacesAutoCompleteParams } from './places.interface';
 import { PlaceAutocompleteType } from '@googlemaps/google-maps-services-js/dist/places/autocomplete';
-
-import Redis from 'ioredis';
 
 const client = new Client({});
 
@@ -38,12 +36,12 @@ export const getHospitals = async ({latlng, radius}: {
     let results = [];
 
     try {
-        const { data }: TextSearchResponse = await client.textSearch({
+        const { data }: PlacesNearbyResponse = await client.placesNearby({
             params: {
                 key: process.env.GOOGLE_API_KEY,
                 location: latlng,
-                query: 'hospitals',
-                radius: radius
+                radius: radius,
+                type: 'hospital'
             }
         })
 
