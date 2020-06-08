@@ -18,7 +18,6 @@ router.get('/autoComplete', async (req: Request, res: Response) => {
 router.post('/hospitals', async (req: Request, res: Response) => {
     const { body } = req;
     const hospitals = await getHospitals(body);
-    console.log(hospitals.len);
     res.json(hospitals)
 })
 
