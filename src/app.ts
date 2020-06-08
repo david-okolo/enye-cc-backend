@@ -13,4 +13,6 @@ app.use(express.json())
 app.use('/places', placesController)
 app.use('/distance', distanceController)
 
+app.use(express.static('public'))
+
 export default app;
