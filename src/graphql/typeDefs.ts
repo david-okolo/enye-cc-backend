@@ -1,3 +1,7 @@
+import { gql } from 'apollo-server';
+
+export const typeDefs = gql`
+
 # type Query {
 #   hello: String
 # }
@@ -34,4 +38,4 @@ type PastSearch {
 type Query {
   places(sub:String! , query: String!, radius: Int!, latlng: LatLngInput!): [Place!]
   pastSearches(sub: String!): [PastSearch!]
-}
+}`

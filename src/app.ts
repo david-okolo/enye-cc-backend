@@ -1,10 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import {ApolloServer} from 'apollo-server';
 import { GraphQLServer } from 'graphql-yoga';
 import jwt from 'express-jwt';
 import jwks from 'jwks-rsa';
 import { resolvers } from './graphql/resolver';
+import { typeDefs } from './graphql/typeDefs';
 
 
 var jwtCheck = jwt({
@@ -29,16 +31,12 @@ mongoose.connection.on('error', () => {
   console.log('MongoDB Error');
 })
 
-const app = new GraphQLServer({
-  typeDefs: './src/graphql/schema.graphql',
+const app = new ApolloServer({
+  typeDefs: typeDefs,
   resolvers: resolvers,
-  context: ({ request: user}) => {
-    // console.log(user);
-    return {user};
+  playground: {
+    endpoint: '/graphql'
   }
 })
-
-app.use(cors())
-app.use(express.json())
 
 export default app;
