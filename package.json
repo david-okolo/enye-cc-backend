@@ -27,12 +27,18 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-jwt": "^5.3.3",
+    "graphql-scalars": "^1.1.5",
+    "graphql-yoga": "^1.18.3",
     "ioredis": "^4.17.3",
+    "jwks-rsa": "^1.8.0",
+    "mongoose": "^5.9.18",
     "uuid": "^8.1.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.6",
+    "@types/mongoose": "^5.7.24",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   }

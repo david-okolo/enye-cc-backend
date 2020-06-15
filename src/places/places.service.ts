@@ -1,57 +1,36 @@
-import { Client, LatLng, TextSearchResponse, PlacesNearbyResponse, defaultAxiosInstance } from '@googlemaps/google-maps-services-js'
-import crypto from 'crypto';
-import { createToken, delay } from '../lib/helper';
-import { IPlacesAutoCompleteParams } from './places.interface';
-import { PlaceAutocompleteType } from '@googlemaps/google-maps-services-js/dist/places/autocomplete';
+import { Client, LatLng, TextSearchResponse } from '@googlemaps/google-maps-services-js'
+import { createPastSearch } from '../search/search.service';
 
 const client = new Client({});
 
-export const autoComplete = async ({query, token, latlng, radius}: IPlacesAutoCompleteParams) => {
-    if(!token) {
-        token = createToken()
-    }
-
-    const { data } = await client.placeAutocomplete({
-        params: {
-            key: process.env.GOOGLE_API_KEY,
-            input: query,
-            sessiontoken: token,
-            location: latlng,
-            radius,
-            types: PlaceAutocompleteType.establishment
-        }
-    });
-
-    return {
-        token,
-        data
-    };
-}
-
-export const getHospitals = async ({latlng, radius}: {
+export const getHospitals = async (payload: {
+    sub: string,
     latlng: LatLng,
-    radius: number
+    radius: number,
+    query: string
 }) => {
 
     let results = [];
 
     try {
-        const { data }: PlacesNearbyResponse = await client.placesNearby({
+        const { data }: TextSearchResponse = await client.textSearch({
             params: {
                 key: process.env.GOOGLE_API_KEY,
-                location: latlng,
-                radius: radius,
-                type: 'hospital'
+                query: payload.query,
+                location: payload.latlng,
+                radius: payload.radius
             }
+        })
+
+        await createPastSearch(payload).catch(e => {
+            throw e;
         })
 
         results.push(...data.results)
     } catch (error) {
-        console.log(error)
+        // console.log(error)
+        throw new Error("Google api request failed");
     }
 
-    return {
-        len: results.length,
-        data: results
-    }
+    return results;
 }
