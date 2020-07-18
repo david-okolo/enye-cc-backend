@@ -12,9 +12,11 @@ const places = async (root: any, args: any, context: any, info: any) => {
     latlng
   } = args;
 
-  console.log(args)
-
   return await getHospitals(args)
+}
+
+const hello = (root: any, args: any) => {
+  return 'Hello World'
 }
 
 const pastSearches = async (root: any, args: any, context: any, info: any) => {
@@ -27,6 +29,7 @@ export const resolvers = {
   Long: LongResolver,
   Query: {
     places,
-    pastSearches
+    pastSearches,
+    hello
   }
 }

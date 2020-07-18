@@ -38,4 +38,5 @@ type PastSearch {
 type Query {
   places(sub:String! , query: String!, radius: Int!, latlng: LatLngInput!): [Place!]
   pastSearches(sub: String!): [PastSearch!]
+  hello: String!
 }`
