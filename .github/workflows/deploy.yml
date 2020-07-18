@@ -11,7 +11,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -24,16 +24,9 @@ jobs:
         node-version: 12.x
     - run: yarn --frozen-lockfile
     - run: yarn test
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: Deploy to Heroku
-      if: ${{ success() }}
-      uses: AkhileshNS/heroku-deploy@v3.2.6
-      with:
-        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_email: david.okolo@icloud.com
-        heroku_app_name: david-enye-backend
         
   deploy:
+    if: ${{ success() }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -42,7 +35,6 @@ jobs:
     - uses: actions/checkout@v2
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Deploy to Heroku
-      if: ${{ success() }}
       uses: AkhileshNS/heroku-deploy@v3.2.6
       with:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
