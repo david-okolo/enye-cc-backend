@@ -35,7 +35,8 @@ const app = new ApolloServer({
   resolvers: resolvers,
   playground: {
     endpoint: '/graphql'
-  }
+  },
+  introspection: true
 })
 
 export default app;
