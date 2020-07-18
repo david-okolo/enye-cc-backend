@@ -1,47 +1,14 @@
 import { Client, LatLng, TextSearchResponse } from '@googlemaps/google-maps-services-js'
-import crypto from 'crypto';
-import { createToken, delay } from '../lib/helper';
-import { IPlacesAutoCompleteParams } from './places.interface';
-import { PlaceAutocompleteType } from '@googlemaps/google-maps-services-js/dist/places/autocomplete';
-
-import Redis from 'ioredis';
+import { createPastSearch } from '../search/search.service';
 
 const client = new Client({});
-const redis = new Redis();
 
-export const autoComplete = async ({query, token, latlng, radius}: IPlacesAutoCompleteParams) => {
-    if(!token) {
-        token = createToken()
-    }
-
-    const { data } = await client.placeAutocomplete({
-        params: {
-            key: process.env.GOOGLE_API_KEY,
-            input: query,
-            sessiontoken: token,
-            location: latlng,
-            radius,
-            types: PlaceAutocompleteType.establishment
-        }
-    });
-
-    return {
-        token,
-        data
-    };
-}
-
-export const getHospitals = async ({latlng, radius}: {
+export const getHospitals = async (payload: {
+    sub: string,
     latlng: LatLng,
-    radius: number
+    radius: number,
+    query: string
 }) => {
-
-    const data = await redis.get(`correct${radius}`);
-
-    if(data) {
-        return { data: JSON.parse(data) };
-    }
-    
 
     let results = [];
 
@@ -49,21 +16,21 @@ export const getHospitals = async ({latlng, radius}: {
         const { data }: TextSearchResponse = await client.textSearch({
             params: {
                 key: process.env.GOOGLE_API_KEY,
-                location: latlng,
-                query: 'hospitals',
-                radius: radius
+                query: payload.query,
+                location: payload.latlng,
+                radius: payload.radius
             }
+        })
+
+        await createPastSearch(payload).catch(e => {
+            throw e;
         })
 
         results.push(...data.results)
     } catch (error) {
-        console.log(error)
+        // console.log(error)
+        throw new Error("Google api request failed");
     }
 
-    await redis.set(`correct${radius}`, JSON.stringify(results))
-
-    return {
-        len: results.length,
-        data: results
-    }
+    return results;
 }

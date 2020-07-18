@@ -5,8 +5,6 @@ name: Deploy
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -24,13 +22,5 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - run: npm ci
-    - run: npm test
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - name: Deploy to Heroku
-      if: ${{ success() }}
-      uses: AkhileshNS/heroku-deploy@v3.2.6
-      with:
-        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_email: david.okolo@icloud.com
-        heroku_app_name: david-enye-backend
+    - run: yarn --frozen-lockfile
+    - run: yarn test

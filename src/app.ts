@@ -1,16 +1,41 @@
 import express from 'express';
 import cors from 'cors';
-import Redis from 'ioredis';
+import mongoose from 'mongoose';
+import {ApolloServer} from 'apollo-server';
+import jwt from 'express-jwt';
+import jwks from 'jwks-rsa';
+import { resolvers } from './graphql/resolver';
+import { typeDefs } from './graphql/typeDefs';
 
-import placesController from './places/places.controller';
-import distanceController from './distance/distance.controller';
 
-const app = express();
+var jwtCheck = jwt({
+      secret: jwks.expressJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+          jwksUri: `${process.env.AUTH0_DOMAIN}.well-known/jwks.json`
+    }),
+    audience: process.env.AUTH0_AUDIENCE,
+    issuer: process.env.AUTH0_DOMAIN,
+    algorithms: ['RS256']
+});
 
-app.use(cors())
-app.use(express.json())
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true});
 
-app.use('/places', placesController)
-app.use('/distance', distanceController)
+mongoose.connection.once('connected', () => {
+  console.log('MongoDB connected')
+})
+
+mongoose.connection.on('error', () => {
+  console.log('MongoDB Error');
+})
+
+const app = new ApolloServer({
+  typeDefs: typeDefs,
+  resolvers: resolvers,
+  playground: {
+    endpoint: '/graphql'
+  }
+})
 
 export default app;

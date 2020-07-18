@@ -2,7 +2,6 @@ import { LatLng, Client, TravelMode } from "@googlemaps/google-maps-services-js"
 import Redis from 'ioredis';
 
 const client = new Client({});
-const redis = new Redis();
 
 export const getDistance = async ({origin, destination}: {origin: LatLng, destination: LatLng}) => {
 
