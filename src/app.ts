@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import {ApolloServer} from 'apollo-server';
-import { GraphQLServer } from 'graphql-yoga';
 import jwt from 'express-jwt';
 import jwks from 'jwks-rsa';
 import { resolvers } from './graphql/resolver';
