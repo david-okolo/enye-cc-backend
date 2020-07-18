@@ -22,8 +22,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - run: npm ci
-    - run: npm test
+    - run: yarn --frozen-lockfile
+    - run: yarn test
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Deploy to Heroku
       if: ${{ success() }}
